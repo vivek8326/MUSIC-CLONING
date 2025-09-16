@@ -102,12 +102,12 @@ async function displayAlbums() {
         let array = Array.from(anchors);
         for (let index = 0; index < array.length; index++) {
             const e = array[index];
-            if (e.href.includes("/hin songs") && !e.href.includes(".htaccess")) {
+            if (e.href.includes("/songs") && !e.href.includes(".htaccess")) {
                 let folder = e.href.split("/").slice(-2)[1];
 
                 try {
                     // Fetch album metadata (info.json)
-                    let infoRes = await fetch(`/hin songs/${folder}/info.json`);
+                    let infoRes = await fetch(`/songs/${folder}/info.json`);
                     if (!infoRes.ok) throw new Error("info.json missing in " + folder);
 
                     let info = await infoRes.json();
@@ -121,7 +121,7 @@ async function displayAlbums() {
                                           stroke="black" fill="#000" stroke-width="0.01" stroke-linejoin="round" />
                                 </svg>
                             </div>
-                            <img src="hin songs/${folder}/cover.jpeg" alt="">
+                            <img src="songs/${folder}/cover.jpeg" alt="">
                             <h2>${info.title}</h2>
                             <p>${info.description}</p>
                         </div>`;
@@ -135,7 +135,7 @@ async function displayAlbums() {
         Array.from(document.getElementsByClassName("card")).forEach(e => {
             e.addEventListener("click", async item => {
                 console.log("Fetching Songs from", item.currentTarget.dataset.folder);
-                songs = await getSongs(`hin songs/${item.currentTarget.dataset.folder}`);
+                songs = await getSongs(`songs/${item.currentTarget.dataset.folder}`);
                 if (songs.length > 0) {
                     playMusic(songs[0]);
                 }
@@ -150,7 +150,7 @@ async function displayAlbums() {
 
 async function main() {
     // Get the list of all the songs
-    await getSongs("hin songs")
+    await getSongs("songs/english songs")
     playMusic(songs[0], true)
     const prev = document.getElementById("prev");
     const next = document.getElementById("next");
@@ -223,14 +223,14 @@ async function main() {
         console.log("Setting volume to", e.target.value, "/ 100")
         currentSong.volume = parseInt(e.target.value) / 100
         if (currentSong.volume > 0) {
-            document.querySelector(".volume>img").src = document.querySelector(".volume>img").src.replace("mute.svg", "volume.svg")
+            document.querySelector(".volume>img").src = document.querySelector(".volume>img").src.replace("img/mute.svg", "img/volume.svg")
         }
     })
 
     // Add event listener to mute the track
     document.querySelector(".volume>img").addEventListener("click", e => {
         if (e.target.src.includes("img/volume.svg")) {
-            e.target.src = e.target.src.replace("img/volume.svg", "img/mute.svg")
+            e.target.src = e.target.src.replace("img/volume.svg", "mute.svg")
             currentSong.volume = 0;
             document.querySelector(".range").getElementsByTagName("input")[0].value = 0;
         }
@@ -247,6 +247,5 @@ async function main() {
 
 
 }
-
 
 main() 
